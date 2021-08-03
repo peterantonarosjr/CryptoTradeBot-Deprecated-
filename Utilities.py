@@ -25,7 +25,7 @@ def buyCrypto(ticker,amount,currentPrice,testing):
     if testing:
         print("Bought "+amount+" "+ticker+" at "+buyLimitPrice)
     else:
-        if amount<=cashAvailable:
+        if amount*currentPrice<=cashAvailable:
             r.order_buy_crypto_limit(symbol=ticker,quantity=amount,limitPrice=buyLimitPrice)
         else:
             print("Not enough cash available in account to purchase")
