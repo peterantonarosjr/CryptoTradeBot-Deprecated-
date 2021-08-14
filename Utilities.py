@@ -1,43 +1,66 @@
 import robin_stocks.robinhood as r
-import pandas as pd
 import robin_stocks.gemini as c
-import pyotp
+import pandas as pd
+import numpy as np
 
+#Returns available cash for authenticated user
 def getLiquidity():
     userAssets = r.load_account_profile()
     liquidity = float(userAssets["portfolio_cash"])
     return liquidity
 
+#Returns the value of all held cryptocurrencies for authenticated user
 def getCryptoEquity():
     userAssets = r.load_phoenix_account()
-    equity = float(userAssets["portfolio_equity"].get("amount"))
+    equity = userAssets["crypto"].get("equity").get("amount")
     return equity
 
-def cryptosToWatch():
+#Specifies a crypto of interest list for the authenticated user
+def cryptosToTrade():
     cryptoList = list()
-    cryptoList.append("eth")
+    cryptoList.append("ETHUSD")
     return cryptoList
 
-def buyCrypto(ticker,amount,currentPrice,testing):
+#Get prices for all interested crypto currencies of the authenticated user
+def getCryptoPrices(cryptoList):
+    cryptoPrices = []
+    for crypto in cryptoList:
+        cryptoPrices.append(c.get_price(crypto,side='buy'))
+    return cryptoPrices
+
+#Buy for a particular crypto currency with max overage willing to pay for authenticated user
+def buyCrypto(ticker,amount,currentPrice,maxOver):
     cashAvailable = getLiquidity()
-    maxOver = 0.15
     buyLimitPrice = round(currentPrice + maxOver, 2)
-    if testing:
-        print("Bought "+amount+" "+ticker+" at "+buyLimitPrice)
+    if amount*buyLimitPrice<=cashAvailable:
+        r.order_buy_crypto_limit(symbol=ticker,quantity=amount,limitPrice=buyLimitPrice)
     else:
-        if amount*currentPrice<=cashAvailable:
-            r.order_buy_crypto_limit(symbol=ticker,quantity=amount,limitPrice=buyLimitPrice)
-        else:
-            print("Not enough cash available in account to purchase")
+        print("Not enough cash available in account to purchase")
 
-def sellCrypto(ticker,amount,currentPrice,testing):
-    maxUnder = 0.15
+def buyCryptoTEST(ticker,amount,currentPrice,maxOver):
+    cashAvailable = getLiquidity()
+    buyLimitPrice = round(currentPrice + maxOver, 2)
+    if amount*buyLimitPrice<=cashAvailable:
+        print("Bought " + str(amount) + " " + ticker + "@ " + str(buyLimitPrice))
+    else:
+        print("Not enough cash available in account to purchase")
+    pass
+
+def sellCryptoTEST(ticker,amount,currentPrice,maxUnder):
     sellLimitPrice = round(currentPrice - maxUnder, 2)
-    if testing:
-        print("Sold "+amount+" "+ticker+" at "+sellLimitPrice)
-    else:
-        r.order_sell_crypto_limit(symbol=ticker,quantity=amount,limitPrice=sellLimitPrice)
+    print("Sold " + str(amount) + " " + ticker + "@ " + str(sellLimitPrice))
 
+#Sell for a particular crypto currency with max underage willing to pay for authenticated user
+def sellCrypto(ticker,amount,currentPrice,maxUnder):
+    sellLimitPrice = round(currentPrice - maxUnder, 2)
+    r.order_sell_crypto_limit(symbol=ticker,quantity=amount,limitPrice=sellLimitPrice)
+
+#Returns a list of specified crypto price
+def getCryptoHistorical(ticker,interval,length):
+    return r.get_crypto_historicals(symbol=ticker, interval=interval, span=length, bounds="24_7")
+
+
+#Uses getCryptoHistorical() to build data frame of dates/openPrice/closePrice/meanPrice
 def buildDatabase(ticker,interval,length):
     cryptoInfo = getCryptoHistorical(ticker,interval,length)
     cryptoFrame = pd.DataFrame(cryptoInfo)
@@ -52,9 +75,7 @@ def buildDatabase(ticker,interval,length):
 
     return cryptoPriceFrame
 
-def graphDatabase():
-    return
-
-def getCryptoHistorical(ticker,interval,length):
-    return r.get_crypto_historicals(ticker, interval=interval, span=length, bounds="24_7")
+#Graphs and dynamically updates the dataframe from buildDatabase()
+def graphDatabase(cryptoFrameList):
+    pass
 
