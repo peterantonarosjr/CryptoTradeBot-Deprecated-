@@ -13,9 +13,9 @@ A cryptocurrency trade bot using the [Robin Stocks API].
 * Provide basic helper functions that will be used throughout the program.
 
 
-### 📃 TradingStrategies.py 
+### 📁 TradingStrategies 
 
-* Implement different trading strategies that return a Buy,Hold,Sell command.
+* Implement different trading strategies that return a Buy,Hold,Sell command. Currently implementing GoldenCross/DeathCross, RSI Divergence, and "dumb" scalping.
 
 
 
