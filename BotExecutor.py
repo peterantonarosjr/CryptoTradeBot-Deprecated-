@@ -29,6 +29,12 @@ def logout():
 
 def main():
     login(1)
+    cash = getLiquidity()
+    equity = getCryptoEquity()
+    print("Account liquidity: $"+str(cash))
+    print("Account equity: $"+str(equity))
+    print(buildDatabase("eth","day","week"))
+
     logout()
 
 if __name__ == "__main__":
