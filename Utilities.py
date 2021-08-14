@@ -1,21 +1,21 @@
 import robin_stocks.robinhood as r
+import pandas as pd
 import robin_stocks.gemini as c
 import pyotp
 
-
 def getLiquidity():
-    userAssets = r.build_user_profile()
-    liquidity = float(userAssets['cash'])
+    userAssets = r.load_account_profile()
+    liquidity = float(userAssets["portfolio_cash"])
     return liquidity
 
-def getEquity():
-    userAssets = r.build_user_profile()
-    equity = float(userAssets['equity'])
+def getCryptoEquity():
+    userAssets = r.load_phoenix_account()
+    equity = float(userAssets["portfolio_equity"].get("amount"))
     return equity
 
 def cryptosToWatch():
     cryptoList = list()
-    cryptoList.append('eth')
+    cryptoList.append("eth")
     return cryptoList
 
 def buyCrypto(ticker,amount,currentPrice,testing):
@@ -38,18 +38,23 @@ def sellCrypto(ticker,amount,currentPrice,testing):
     else:
         r.order_sell_crypto_limit(symbol=ticker,quantity=amount,limitPrice=sellLimitPrice)
 
-def buildDatabase():
-    return
+def buildDatabase(ticker,interval,length):
+    cryptoInfo = getCryptoHistorical(ticker,interval,length)
+    cryptoFrame = pd.DataFrame(cryptoInfo)
+
+    dateTimes = pd.to_datetime(cryptoFrame.loc[:, 'begins_at'])
+    openPrices = cryptoFrame.loc[:, 'open_price'].astype('float')
+    closePrices = cryptoFrame.loc[:, 'close_price'].astype('float')
+
+    cryptoPriceFrame = pd.concat([dateTimes,openPrices,closePrices], axis=1)
+    cryptoPriceFrame = cryptoPriceFrame.set_index('begins_at')
+    cryptoPriceFrame['mean_price'] = cryptoPriceFrame.mean(axis=1)
+
+    return cryptoPriceFrame
 
 def graphDatabase():
     return
 
-def getCryptoHistorical(ticker,length,type):
-    info = type.lower()
-    info.replace(' ','')
-    for charPos in range(0,len(info)):
-        if info[charPos]=='p':
-            infoFormat = info[:charPos-1]+"_"+info[charPos:]
-            return r.get_crypto_historicals(ticker, interval='day', span=length, bounds='24_7', info=infoFormat)
-        else:
-            print("Improperly formatted arguments")
+def getCryptoHistorical(ticker,interval,length):
+    return r.get_crypto_historicals(ticker, interval=interval, span=length, bounds="24_7")
+
