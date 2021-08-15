@@ -33,7 +33,7 @@ def login(numOfDays):
 def logout():
     r.logout()
 
-#Takes in loginDuration (# of days) and updateFrequency (# of minutes)
+#Takes in loginDuration (# of days) and updateFrequency (# of seconds)
 def main(loginDuration,updateFrequency):
     login(loginDuration)
     loginTime = datetime.datetime.now()
@@ -47,23 +47,14 @@ def main(loginDuration,updateFrequency):
     while currentTime<logoutTime:
         cash = getLiquidity()
         equity = getCryptoEquity()
-
-        print(getCryptoPrices(cryptoTickerList))
-        print(crossStrategy.getShortMovingAverage()[1])
-        print(crossStrategy.getLongMovingAverage()[1])
-
-
-
-        #MAIN TRADING STUFF GOES HERE
+        crossStrategy.update() #Main Trading Logic for Golden/DeathCross
 
         time.sleep(updateFrequency)
-        crossStrategy.update()
         currentTime = datetime.datetime.now()
 
     logout()
 
-
 if __name__ == "__main__":
     #Input # days login, # seconds update delta
-    main(1,5)
+    main(1,30)
 
