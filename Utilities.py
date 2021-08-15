@@ -1,7 +1,6 @@
 import robin_stocks.robinhood as r
 import robin_stocks.gemini as c
 import pandas as pd
-import numpy as np
 
 #Returns available cash for authenticated user
 def getLiquidity():
@@ -59,7 +58,6 @@ def sellCrypto(ticker,amount,currentPrice,maxUnder):
 def getCryptoHistorical(ticker,interval,length):
     return r.get_crypto_historicals(symbol=ticker, interval=interval, span=length, bounds="24_7")
 
-
 #Uses getCryptoHistorical() to build data frame of dates/openPrice/closePrice/meanPrice
 def buildDatabase(ticker,interval,length):
     cryptoInfo = getCryptoHistorical(ticker,interval,length)
@@ -72,10 +70,6 @@ def buildDatabase(ticker,interval,length):
     cryptoPriceFrame = pd.concat([dateTimes,openPrices,closePrices], axis=1)
     cryptoPriceFrame = cryptoPriceFrame.set_index('begins_at')
     cryptoPriceFrame['mean_price'] = cryptoPriceFrame.mean(axis=1)
-
     return cryptoPriceFrame
 
-#Graphs and dynamically updates the dataframe from buildDatabase()
-def graphDatabase(cryptoFrameList):
-    pass
 
