@@ -1,7 +1,10 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
 import Utilities
-from TradingStrategies import GoldenDeathCross
-from TradingStrategies import RSIDivergence
-from TradingStrategies import Scalping
+from IndicatorSignals import GoldenDeathCross
+from IndicatorSignals import RSIDivergence
+from IndicatorSignals import Scalping
 from Utilities import *
 import pyotp
 import time
@@ -41,13 +44,15 @@ def main(loginDuration,updateFrequency):
     currentTime = datetime.datetime.now()
 
     cryptoTickerList = cryptosToTrade()
-
     crossStrategy = GoldenDeathCross.CrossStrategy(cryptoTickerList)
 
     while currentTime<logoutTime:
         cash = getLiquidity()
         equity = getCryptoEquity()
+
         crossStrategy.update() #Main Trading Logic for Golden/DeathCross
+
+        #Build up a database of trades
 
         time.sleep(updateFrequency)
         currentTime = datetime.datetime.now()
@@ -56,5 +61,5 @@ def main(loginDuration,updateFrequency):
 
 if __name__ == "__main__":
     #Input # days login, # seconds update delta
-    main(1,30)
+    main(1,5)
 
