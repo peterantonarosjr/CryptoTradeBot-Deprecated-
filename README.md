@@ -5,7 +5,7 @@ A cryptocurrency trade bot using the [Robin Stocks API].
 
 ### 📃 BotExecutor.py
 
-* Recieve user credentials/key and login to RobinHood.
+* Recieve user credentials/key and login to RobinHood.  Main "trading loop" is contained within this file.
 
 
 ### 📃 Utilities.py 
@@ -13,9 +13,9 @@ A cryptocurrency trade bot using the [Robin Stocks API].
 * Provide basic helper functions that will be used throughout the program.
 
 
-### 📁 TradingStrategies 
+### 📁 Indicators 
 
-* Implement different trading strategies that return a Buy,Hold,Sell command. Currently implementing GoldenCross/DeathCross, RSI Divergence, and "dumb" scalping.
+* Implement different trade indicators that return a Buy,Hold,Sell command. Currently implementing GoldenCross/DeathCross, RSI Divergence, and "dumb" scalping.
 
 
 
