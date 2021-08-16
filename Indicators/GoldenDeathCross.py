@@ -6,8 +6,9 @@ class CrossStrategy:
         self.cryptoList = cryptoList
         self.cryptoPriceList = None
         self.cryptoTradeList = None
+        self.signalStatus = None
         self.setCryptoTradeList()
-        #self.tradeStatus = ''
+
 
     #Set instance variable cryptoPriceList
     def setCryptoPriceList(self):
@@ -48,30 +49,7 @@ class CrossStrategy:
             i += 1
         return cryptosLongDatabases
 
-    #Graph the dbs for each crypto in cryptoList (short/long) and their short/long avgs NEEDS FIXING/REMOVAL
-    def graphMovingAverages(self):
-        shortDBs = self.getShortMovingAverage()
-        longDBs = self.getLongMovingAverage()
-
-        fig = plt.figure(figsize=(15,8))
-        for crypto in self.cryptoList:
-            ax1 = fig.add_subplot(221)
-            ax1.title.set_text("Short Moving Average (30 Day)")
-            plt.plot(shortDBs.get(crypto))
-
-            ax2 = fig.add_subplot(222)
-            ax2.title.set_text("Long Moving Average (100 Day)")
-            plt.plot(longDBs.get(crypto))
-
-            ax3 = fig.add_subplot(223)
-            ax3.title.set_text("Short Vs Long Moving Average")
-            plt.plot(longDBs.get(crypto))
-            plt.plot(shortDBs.get(crypto))
-
-        plt.tight_layout()
-        plt.show()
-
-    #Decides whether or not to trade based on Golden/Death Cross Idea
+    #Decides whether or not to return Buy/Sell/Hold signal
     def decideToTrade(self, shortDBs, longDBs):
         for crypto in self.cryptoList:
             shortDB = shortDBs.get(crypto)
@@ -79,18 +57,17 @@ class CrossStrategy:
             if shortDB.iloc[-1]['short_moving_average'] > longDB.iloc[-1]['long_moving_average']:
                 print("SMA: "+str(shortDB.iloc[-1]['short_moving_average']) + " " + "LMA: "+str(longDB.iloc[-1]['long_moving_average']))
                 print("Buy Signal")
-                return 1
+                self.signalStatus = "BUY"
             else:
                 print("SMA: "+str(shortDB.iloc[-1]['short_moving_average']) + " " + "LMA: "+str(longDB.iloc[-1]['long_moving_average']))
                 print("Sell Signal")
-                return 0
+                self.signalStatus = "SELL"
 
     #Main updateFunction to refresh based on new Robinhood data
     def update(self):
         shortMovingDatabases = self.getShortMovingAverage()
         longMovingDatabases = self.getLongMovingAverage()
         self.decideToTrade(shortMovingDatabases, longMovingDatabases)
-        #self.graphMovingAverages() #ISSUE WITH DYNAMIC UPDATING -> NEEDS FIXING/REMOVAL
         self.setCryptoTradeList()
 
 
