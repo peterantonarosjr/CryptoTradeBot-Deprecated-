@@ -1,5 +1,7 @@
+import random
 import robin_stocks.robinhood as r
 import robin_stocks.gemini as c
+import matplotlib.pyplot as plt
 import pandas as pd
 
 #Returns available cash for authenticated user
@@ -72,4 +74,18 @@ def buildDatabase(ticker,interval,length):
     cryptoPriceFrame['mean_price'] = cryptoPriceFrame.mean(axis=1)
     return cryptoPriceFrame
 
+def updateActiveGraph(smaDB,lmaDB,pause=1):
+    unique_cols = smaDB.columns.difference(lmaDB.columns)
+    sma_lma_mergeDB = pd.merge(lmaDB, smaDB[unique_cols], left_index=True, right_index=True, how='outer')
+    plt.clf()
+    plt.ion()
+    plt.figure(figsize=(15, 8))
+    plt.title('Statistic Logger')
+
+    #Plots go here
+    plt.plot(sma_lma_mergeDB)
+
+    plt.legend(sma_lma_mergeDB.columns.values.tolist(), loc='upper left')
+    plt.draw()
+    plt.pause(pause)
 
