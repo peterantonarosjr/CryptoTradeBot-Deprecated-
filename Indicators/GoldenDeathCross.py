@@ -1,5 +1,4 @@
 import Utilities
-import matplotlib.pyplot as plt
 
 class CrossStrategy:
     def __init__(self,cryptoList):
@@ -69,8 +68,3 @@ class CrossStrategy:
         longMovingDatabases = self.getLongMovingAverage()
         self.decideToTrade(shortMovingDatabases, longMovingDatabases)
         self.setCryptoTradeList()
-
-
-
-
-
