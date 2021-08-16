@@ -1,14 +1,11 @@
-import matplotlib.pyplot as plt
-import numpy as np
-
-import Utilities
+from Utilities import *
 from Indicators import GoldenDeathCross
 from Indicators import RSIDivergence
 from Indicators import Scalping
-from Utilities import *
 import pyotp
 import time
 import datetime
+
 
 #User authentication and login for a specified number of days
 def login(numOfDays):
@@ -51,8 +48,9 @@ def main(loginDuration,updateFrequency):
         equity = getCryptoEquity()
 
         crossStrategy.update() #Main Trading Logic for Golden/DeathCross
+        updateActiveGraph(crossStrategy.getShortMovingAverage().get('ETHUSD')
+                                         ,crossStrategy.getLongMovingAverage().get('ETHUSD'))
 
-        #Create a TradeLogDataBase
         #DATE(Index)     CRYPTO_TICKER      PRICE       STATUS_OF_TRADE
 
         #Check each Indicator -> .signal attribute
@@ -67,5 +65,5 @@ def main(loginDuration,updateFrequency):
 
 if __name__ == "__main__":
     #Input # days login, # seconds update delta
-    main(1,5)
+    main(1,10)
 
