@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import Utilities
-from IndicatorSignals import GoldenDeathCross
-from IndicatorSignals import RSIDivergence
-from IndicatorSignals import Scalping
+from Indicators import GoldenDeathCross
+from Indicators import RSIDivergence
+from Indicators import Scalping
 from Utilities import *
 import pyotp
 import time
@@ -52,7 +52,13 @@ def main(loginDuration,updateFrequency):
 
         crossStrategy.update() #Main Trading Logic for Golden/DeathCross
 
-        #Build up a database of trades
+        #Create a TradeLogDataBase
+        #DATE(Index)     CRYPTO_TICKER      PRICE       STATUS_OF_TRADE
+
+        #Check each Indicator -> .signal attribute
+        #Decide whether or not to complete a trade based on signals
+
+        #Append information to TradeLogDataBase
 
         time.sleep(updateFrequency)
         currentTime = datetime.datetime.now()
