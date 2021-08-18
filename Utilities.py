@@ -79,7 +79,7 @@ def updateActiveGraph(smaDB,lmaDB,pause=1):
     sma_lma_mergeDB = pd.merge(lmaDB, smaDB[unique_cols], left_index=True, right_index=True, how='outer')
     plt.clf()
     plt.ion()
-    plt.figure(figsize=(15, 8))
+    #plt.figure(figsize=(15, 8))
     plt.title('Statistic Logger')
 
     #Plots go here
