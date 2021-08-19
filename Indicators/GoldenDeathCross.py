@@ -31,7 +31,7 @@ class CrossStrategy:
         cryptosShortDatabases = {}
         i = 0
         for crypto in self.cryptoList:
-            cryptoDB = Utilities.buildDatabase(crypto[:3], "day", "3month")
+            cryptoDB = Utilities.buildIndicatorDatabase(crypto[:3], "day", "3month")
             cryptoDB['short_moving_average'] = cryptoDB['mean_price'].rolling(window=30).mean()
             cryptosShortDatabases.update({crypto: cryptoDB.dropna().iloc[-30:]})
             i += 1
@@ -42,7 +42,7 @@ class CrossStrategy:
         cryptosLongDatabases = {}
         i = 0
         for crypto in self.cryptoList:
-            cryptoDB = Utilities.buildDatabase(crypto[:3], "day", "year")
+            cryptoDB = Utilities.buildIndicatorDatabase(crypto[:3], "day", "year")
             cryptoDB['long_moving_average'] = cryptoDB['mean_price'].rolling(window=100).mean()
             cryptosLongDatabases.update({crypto: cryptoDB.dropna().iloc[-100:]})
             i += 1
