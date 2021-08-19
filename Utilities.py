@@ -61,7 +61,7 @@ def getCryptoHistorical(ticker,interval,length):
     return r.get_crypto_historicals(symbol=ticker, interval=interval, span=length, bounds="24_7")
 
 #Uses getCryptoHistorical() to build data frame of dates/openPrice/closePrice/meanPrice
-def buildDatabase(ticker,interval,length):
+def buildIndicatorDatabase(ticker,interval,length):
     cryptoInfo = getCryptoHistorical(ticker,interval,length)
     cryptoFrame = pd.DataFrame(cryptoInfo)
 
@@ -74,12 +74,18 @@ def buildDatabase(ticker,interval,length):
     cryptoPriceFrame['mean_price'] = cryptoPriceFrame.mean(axis=1)
     return cryptoPriceFrame
 
-def updateActiveGraph(smaDB,lmaDB,pause=1):
+def buildTradeDatabase():
+    cols = ['date', 'crypto_ticker', 'transaction_price', 'trade_status']
+    cryptoTradeFrame = pd.DataFrame(columns=cols)
+    cryptoTradeFrame.set_index('date')
+    return cryptoTradeFrame
+
+def updateActiveGraph(xSize,ySize,smaDB,lmaDB,pause=1):
     unique_cols = smaDB.columns.difference(lmaDB.columns)
     sma_lma_mergeDB = pd.merge(lmaDB, smaDB[unique_cols], left_index=True, right_index=True, how='outer')
+    plt.rcParams['figure.figsize'] = (xSize,ySize)
     plt.clf()
     plt.ion()
-    #plt.figure(figsize=(15, 8))
     plt.title('Statistic Logger')
 
     #Plots go here
@@ -89,3 +95,5 @@ def updateActiveGraph(smaDB,lmaDB,pause=1):
     plt.draw()
     plt.pause(pause)
 
+def returnStatus():
+    pass
