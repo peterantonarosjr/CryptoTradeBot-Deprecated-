@@ -50,6 +50,9 @@ def main(loginDuration, mainUpdateDelta):
     crossStrategyTime = currentTime
     crossStrategyUpdateDelta = 10
 
+    #Main Trade database
+    cryptoTradeHistory = buildTradeDatabase()
+
     while currentTime < logoutTime:
         cash = getLiquidity()
         equity = getCryptoEquity()
@@ -58,8 +61,6 @@ def main(loginDuration, mainUpdateDelta):
             #print("Cross Strategy Update")
             crossStrategy.update() # Main Trading Logic for Golden/DeathCross
             crossTimeDelta = currentTime
-        else:
-            pass
 
 
         # DATE(Index)     CRYPTO_TICKER      PRICE       STATUS_OF_TRADE
@@ -67,9 +68,14 @@ def main(loginDuration, mainUpdateDelta):
         # Check each Indicator -> .signal attribute
         # Decide whether or not to complete a trade based on signals
 
-        # Append information to TradeLogDataBase
+        # if tradeCompleted:
+            # ticker = BLAH
+            # price = BLAH
+            # tradeStatus = BLAH
+            # tradeDate = datetime.datetime.now()
+            # cryptoTradeHistory.iloc[tradeDate] = [ticker,price,tradeStatus]
 
-        updateActiveGraph(crossStrategy.getShortMovingAverage().get('ETHUSD')
+        updateActiveGraph(13,6,crossStrategy.getShortMovingAverage().get('ETHUSD')
                           , crossStrategy.getLongMovingAverage().get('ETHUSD'))
 
         time.sleep(mainUpdateDelta)
