@@ -84,7 +84,6 @@ def main(loginDuration, mainUpdateDelta):
         #print("Main Update")
         currentTime = datetime.datetime.now()
 
-
     logout()
 
 if __name__ == "__main__":
