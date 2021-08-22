@@ -1,4 +1,3 @@
-import random
 import robin_stocks.robinhood as r
 import robin_stocks.gemini as c
 import matplotlib.pyplot as plt
@@ -20,6 +19,7 @@ def getCryptoEquity():
 def cryptosToTrade():
     cryptoList = list()
     cryptoList.append("ETHUSD")
+    cryptoList.append("LTCUSD")
     return cryptoList
 
 #Get prices for all interested crypto currencies of the authenticated user
@@ -72,6 +72,8 @@ def buildIndicatorDatabase(ticker,interval,length):
     cryptoPriceFrame = pd.concat([dateTimes,openPrices,closePrices], axis=1)
     cryptoPriceFrame = cryptoPriceFrame.set_index('begins_at')
     cryptoPriceFrame['mean_price'] = cryptoPriceFrame.mean(axis=1)
+
+    cryptoPriceFrame.rename(columns={'open_price': ticker+'_open_price', 'close_price': ticker+'_close_price', 'mean_price': ticker+'_mean_price'}, inplace=True)
     return cryptoPriceFrame
 
 def buildTradeDatabase():
@@ -80,20 +82,23 @@ def buildTradeDatabase():
     cryptoTradeFrame.set_index('date')
     return cryptoTradeFrame
 
-def updateActiveGraph(xSize,ySize,smaDB,lmaDB,pause=1):
-    unique_cols = smaDB.columns.difference(lmaDB.columns)
-    sma_lma_mergeDB = pd.merge(lmaDB, smaDB[unique_cols], left_index=True, right_index=True, how='outer')
-    plt.rcParams['figure.figsize'] = (xSize,ySize)
+def updateActiveGraph(xSize,ySize,cryptoList,smaDB,lmaDB,pause=1):
+    plt.rcParams['figure.figsize'] = (xSize, ySize)
     plt.clf()
     plt.ion()
     plt.title('Statistic Logger')
 
-    #Plots go here
-    plt.plot(sma_lma_mergeDB)
+    cryptoPlots = []
 
-    plt.legend(sma_lma_mergeDB.columns.values.tolist(), loc='upper left')
+    for crypto in cryptoList:
+        unique_cols = smaDB.get(crypto).columns.difference(lmaDB.get(crypto).columns)
+        sma_lma_mergeDB = pd.merge(lmaDB.get(crypto), smaDB.get(crypto)[unique_cols], left_index=True, right_index=True, how='outer')
+        cryptoPlots.append(sma_lma_mergeDB)
+
+    finalStatsPlot = pd.concat(cryptoPlots, axis=1)
+    plt.plot(finalStatsPlot)
+    plt.legend(finalStatsPlot.columns.values.tolist(),
+               bbox_to_anchor=(0.5, 1.16),ncol=5,fontsize=16/len(cryptoList),loc='upper center')
+
     plt.draw()
     plt.pause(pause)
-
-def returnStatus():
-    pass
