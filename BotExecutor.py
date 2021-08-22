@@ -1,7 +1,7 @@
 from Utilities import *
 from Indicators import GoldenDeathCross
 from Indicators import RSIDivergence
-from Indicators import Scalping
+from Indicators import DumbScalping
 import pyotp
 import time
 import datetime
@@ -28,7 +28,6 @@ def login(numOfDays):
     except:
         print("Failed Login/Authentication")
 
-
 # User logout
 def logout():
     r.logout()
@@ -50,6 +49,11 @@ def main(loginDuration, mainUpdateDelta):
     crossStrategyTime = currentTime
     crossStrategyUpdateDelta = 10
 
+    #Dumb Scalping
+    #dumbScalping = DumbScalping.DumbScalp(cryptoTickerList)
+    dumbScalpingTime = currentTime
+    dumbScalpingUpdateDelta = 10
+
     #Main Trade database
     cryptoTradeHistory = buildTradeDatabase()
 
@@ -61,7 +65,6 @@ def main(loginDuration, mainUpdateDelta):
             #print("Cross Strategy Update")
             crossStrategy.update() # Main Trading Logic for Golden/DeathCross
             crossTimeDelta = currentTime
-
 
         # DATE(Index)     CRYPTO_TICKER      PRICE       STATUS_OF_TRADE
 
@@ -75,12 +78,12 @@ def main(loginDuration, mainUpdateDelta):
             # tradeDate = datetime.datetime.now()
             # cryptoTradeHistory.iloc[tradeDate] = [ticker,price,tradeStatus]
 
-        updateActiveGraph(13,6,crossStrategy.getShortMovingAverage().get('ETHUSD')
-                          , crossStrategy.getLongMovingAverage().get('ETHUSD'))
+        updateActiveGraph(13,8,cryptoTickerList,crossStrategy.shortMovingAverages,crossStrategy.longMovingAverages)
 
         time.sleep(mainUpdateDelta)
         #print("Main Update")
         currentTime = datetime.datetime.now()
+
 
     logout()
 
