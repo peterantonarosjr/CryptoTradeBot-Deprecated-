@@ -70,7 +70,6 @@ def main(loginDuration, mainUpdateDelta):
 
         # Check each Indicator -> .signal attribute
         # Decide whether or not to complete a trade based on signals
-
         # if tradeCompleted:
             # ticker = BLAH
             # price = BLAH
